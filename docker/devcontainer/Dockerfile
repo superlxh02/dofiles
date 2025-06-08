@@ -1,4 +1,7 @@
 FROM fedora:latest
+# Configure Chinese mirror sources
+RUN sed -i 's|^metalink=|#metalink=|g' /etc/yum.repos.d/*.repo && \
+    sed -i 's|^#baseurl=http://download.example/pub/fedora/linux|baseurl=https://mirrors.aliyun.com/fedora|g' /etc/yum.repos.d/*.repo
 
 RUN dnf update -y && \
   dnf install -y \

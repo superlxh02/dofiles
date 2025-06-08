@@ -2,13 +2,11 @@ FROM ubuntu
 
 RUN apt-get update -y \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-  vim gawk perl git wget curl net-tools telnet htop \
+   perl git wget curl \
   gcc g++ make cmake gdb \
-  clangd clang llvm lldb xmake \
-  valgrind bpfcc-tools bpftrace linux-headers-generic linux-tools-generic \
-  strace ltrace heaptrack smem sysstat tcpdump \
+  clangd  \
+  valgrind linux-headers-generic linux-tools-generic  strace ltrace \
   automake autoconf libtool \
-  wireshark \
   python3-pip \
   && apt-get clean \
   && ln -s /usr/lib/linux-tools/*/perf /usr/local/bin/perf

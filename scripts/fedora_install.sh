@@ -38,7 +38,7 @@ sudo dnf install -y \
     which file findutils grep sed awk ripgrep fd-find \
     bash-completion zsh fish lsd procs bat\
     tmux screen \
-    jq bat exa fzf
+    jq bat  fzf
 
 # 安装C/C++开发工具（全部用dnf）
 echo "安装C/C++开发工具..."

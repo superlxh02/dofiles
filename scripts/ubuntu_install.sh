@@ -36,7 +36,7 @@ sudo apt install -y \
     which file findutils grep sed gawk ripgrep fd-find \
     bash-completion zsh fish \
     tmux screen \
-    jq bat fzf
+     bat fzf
 
 # 安装现代命令行工具（需要snap或手动安装）
 sudo snap install lsd procs btop || echo "某些现代工具需要手动安装"

@@ -10,9 +10,9 @@ after-login-command = []
 # 'after-startup-command' is run after 'after-login-command'
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
 after-startup-command = [
-    # JankyBorders has a built-in detection of already running process,
-    # so it won't be run twice on AeroSpace restart
-    'exec-and-forget borders active_color=0xffe1e3e4 inactive_color=0x00494d64 width=5'
+	# JankyBorders has a built-in detection of already running process,
+	# so it won't be run twice on AeroSpace restart
+	'exec-and-forget borders active_color=0xffe1e3e4 inactive_color=0x00494d64 width=5',
 ]
 
 # Start AeroSpace at login
@@ -141,7 +141,7 @@ alt-t = 'workspace T'
 alt-y = 'workspace Y'
 alt-z = 'workspace Z'
 alt-0 = 'workspace 0'
-alt-space = 'workspace "vscodeworkspace"'  # 绑定到空格键
+alt-space = 'workspace "vscodeworkspace"' # 绑定到空格键
 alt-ctrl-1 = 'summon-workspace 1'
 alt-ctrl-2 = 'summon-workspace 2'
 alt-ctrl-3 = 'summon-workspace 3'
@@ -396,8 +396,10 @@ run = ['layout floating']
 
 [[on-window-detected]]
 if.app-id = "com.microsoft.VSCode"
-run = ["move-node-to-workspace vscodeworkspace"]
+run = ["move-node-to-workspace vscode"]
+
+
 
 [[on-window-detected]]
 if.app-id = "com.neovide.neovide"
-run = ['layout floating','move-node-to-workspace neovide']
+run = ['layout floating', 'move-node-to-workspace neovide']

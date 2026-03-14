@@ -1,0 +1,22 @@
+fork = true
+idle = true
+maximized = false
+mouse-cursor-icon = "arrow"
+neovim-bin = "/opt/homebrew/bin/nvim" # in reality found dynamically on $PATH if unset
+no-multigrid = false
+srgb = false
+tabs = true
+theme = "auto"
+title-hidden = true
+vsync = true
+size = [120, 80]
+[font]
+normal = ["Mononoki Nerd Font Mono"]
+size = 20.0
+
+[box-drawing]
+# "font-glyph", "native" or "selected-native"
+mode = "font-glyph"
+
+[box-drawing.sizes]
+default = [2, 4] # Thin and thick values respectively, for all sizes

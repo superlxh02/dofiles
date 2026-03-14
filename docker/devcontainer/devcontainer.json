@@ -1,0 +1,29 @@
+{
+  "name": "C++ Dev",
+  "dockerFile": "Dockerfile",
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools-extension-pack",
+        "plex.vscode-protolint",
+        "zxh404.vscode-proto3",
+        "llvm-vs-code-extensions.vscode-clangd",
+        "xaver.clang-format",
+        "donjayamanne.python-extension-pack"
+      ],
+      "settings": {
+        "C_Cpp.intelliSenseEngine": "disabled",
+        "clangd.path": "/usr/bin/clangd",
+        "clangd.arguments": [
+          "--background-index",
+          "--compile-commands-dir=${workspaceFolder}/build",
+          "--completion-style=detailed",
+          "--header-insertion=never",
+          "--query-driver=/usr/bin/g++"  
+        ]
+
+      }   
+    }
+  }
+}

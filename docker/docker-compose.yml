@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  cpp-dev:
+    build:
+      context: .
+      dockerfile: fedora-demo.Dockerfile
+    privileged: true
+    volumes:
+      - /Users/liuxiaohua/workspace:/workspace:cached
+    environment:
+      - TZ=Asia/Shanghai
+    working_dir: /workspace
+    command: tail -f /dev/null
+    tty: true

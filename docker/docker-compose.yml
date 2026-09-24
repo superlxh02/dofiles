@@ -3,10 +3,10 @@ services:
   cpp-dev:
     build:
       context: .
-      dockerfile: fedora-demo.Dockerfile
+      dockerfile: 02-full-cpp/Dockerfile.fedora-latest
     privileged: true
     volumes:
-      - /Users/liuxiaohua/workspace:/workspace:cached
+      - ${HOME}/workspace:/workspace:cached
     environment:
       - TZ=Asia/Shanghai
     working_dir: /workspace

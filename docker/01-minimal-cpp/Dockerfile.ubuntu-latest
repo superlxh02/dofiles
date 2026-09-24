@@ -1,0 +1,26 @@
+FROM ubuntu:latest
+
+LABEL org.opencontainers.image.title="minimal-cpp-ubuntu-latest" \
+      org.opencontainers.image.description="Small GNU/LLVM C++ development image on the latest Ubuntu LTS"
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        ca-certificates \
+        clang \
+        clang-format \
+        clangd \
+        cmake \
+        gdb \
+        git \
+        lldb \
+        ninja-build \
+        pkg-config \
+    && rm -rf /var/lib/apt/lists/* \
+    && command -v clangd \
+    && command -v clang-format
+
+WORKDIR /workspace
+CMD ["/bin/bash"]

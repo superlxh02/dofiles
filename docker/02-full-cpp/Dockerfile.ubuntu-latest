@@ -1,0 +1,48 @@
+FROM ubuntu:latest
+
+LABEL org.opencontainers.image.title="full-cpp-ubuntu-latest" \
+      org.opencontainers.image.description="Complete GNU/LLVM C++ toolchain and package-manager stack on the latest Ubuntu LTS"
+
+ARG BAZELISK_VERSION=v1.29.0
+ARG TARGETARCH
+ENV DEBIAN_FRONTEND=noninteractive \
+    VCPKG_ROOT=/opt/vcpkg \
+    VCPKG_DISABLE_METRICS=1
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        autoconf automake bash-completion bison build-essential ccache \
+        ca-certificates clang clang-format clang-tidy clangd cmake cppcheck \
+        curl file flex g++ gcc gdb gdbserver gfortran git jq \
+        bpfcc-tools bpftrace dwarves libc++-dev libc++abi-dev libbpf-dev \
+        libclang-rt-dev libelf-dev libomp-dev libtool linux-tools-common \
+        linux-tools-generic lld lldb llvm make meson mold \
+        ninja-build pkg-config python3 python3-pip python3-venv \
+        strace tar tcpdump unzip valgrind wget wrk xz-utils zip \
+    && rm -rf /var/lib/apt/lists/* \
+    && command -v clangd \
+    && command -v clang-format \
+    && command -v perf \
+    && command -v bpftool
+
+RUN python3 -m venv /opt/conan \
+    && /opt/conan/bin/pip install --no-cache-dir --upgrade pip conan
+
+RUN git clone --depth 1 https://github.com/microsoft/vcpkg.git "${VCPKG_ROOT}" \
+    && "${VCPKG_ROOT}/bootstrap-vcpkg.sh" -disableMetrics \
+    && rm -rf "${VCPKG_ROOT}/.git"
+
+RUN set -eux; \
+    arch="${TARGETARCH:-amd64}"; \
+    case "$arch" in amd64|arm64) ;; *) echo "Unsupported architecture: $arch" >&2; exit 1 ;; esac; \
+    curl -fsSL "https://github.com/bazelbuild/bazelisk/releases/download/${BAZELISK_VERSION}/bazelisk-linux-${arch}" -o /usr/local/bin/bazel; \
+    chmod +x /usr/local/bin/bazel; \
+    ln -s /usr/local/bin/bazel /usr/local/bin/bazelisk
+
+RUN curl -fsSL https://xmake.io/shget.text | bash
+
+ENV PATH="/opt/conan/bin:${VCPKG_ROOT}:/root/.local/bin:${PATH}" \
+    CMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+
+WORKDIR /workspace
+CMD ["/bin/bash"]

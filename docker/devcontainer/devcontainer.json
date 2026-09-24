@@ -1,11 +1,18 @@
 {
   "name": "C++ Dev",
   "dockerFile": "Dockerfile",
-  "workspaceFolder": "/workspace",
+  "workspaceFolder": "${containerWorkspaceFolder}",
+  "remoteEnv": {
+    "VCPKG_ROOT": "/opt/vcpkg",
+    "CMAKE_TOOLCHAIN_FILE": "/opt/vcpkg/scripts/buildsystems/vcpkg.cmake"
+  },
   "customizations": {
     "vscode": {
       "extensions": [
         "ms-vscode.cpptools-extension-pack",
+        "ms-vscode.cmake-tools",
+        "tboox.xmake-vscode",
+        "BazelBuild.vscode-bazel",
         "plex.vscode-protolint",
         "zxh404.vscode-proto3",
         "llvm-vs-code-extensions.vscode-clangd",
@@ -13,17 +20,48 @@
         "donjayamanne.python-extension-pack"
       ],
       "settings": {
-        "C_Cpp.intelliSenseEngine": "disabled",
-        "clangd.path": "/usr/bin/clangd",
-        "clangd.arguments": [
-          "--background-index",
-          "--compile-commands-dir=${workspaceFolder}/build",
-          "--completion-style=detailed",
-          "--header-insertion=never",
-          "--query-driver=/usr/bin/g++"  
-        ]
-
-      }   
+        "C_Cpp.intelliSenseEngine": "default",
+        "C_Cpp.default.compilerPath": "/usr/bin/g++",
+        "C_Cpp.default.intelliSenseMode": "linux-gcc-arm64",
+        "C_Cpp.default.cppStandard": "c++26",
+        "C_Cpp.default.cStandard": "c23",
+        "C_Cpp.default.compilerArgs": [
+          "-std=c++26"
+        ],
+        "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+        "C_Cpp.autocomplete": "default",
+        "C_Cpp.errorSquiggles": "enabled",
+        "C_Cpp.inlayHints.autoDeclarationTypes.enabled": true,
+        "C_Cpp.inlayHints.autoDeclarationTypes.showOnLeft": true,
+        "C_Cpp.inlayHints.parameterNames.enabled": true,
+        "C_Cpp.inlayHints.referenceOperator.enabled": true,
+        "C_Cpp.codeAnalysis.runAutomatically": true,
+        "C_Cpp.codeAnalysis.clangTidy.enabled": true,
+        "C_Cpp.codeAnalysis.clangTidy.path": "/usr/bin/clang-tidy",
+        "cmake.buildDirectory": "${workspaceFolder}/build",
+        "cmake.configureSettings": {
+          "CMAKE_CXX_STANDARD": "26",
+          "CMAKE_CXX_STANDARD_REQUIRED": "ON",
+          "CMAKE_CXX_EXTENSIONS": "OFF",
+          "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+          "CMAKE_TOOLCHAIN_FILE": "/opt/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        },
+        "xmake.executable": "xmake",
+        "xmake.workingDirectory": "${workspaceFolder}",
+        "xmake.buildDirectory": "${workspaceFolder}/build",
+        "xmake.compileCommandsDirectory": "build",
+        "xmake.compileCommandsBackend": "cpptools",
+        "xmake.autoGenerateCompileCommands": "onBuild",
+        "xmake.debugConfigType": "default",
+        "bazel.executable": "bazel",
+        "terminal.integrated.env.linux": {
+          "VCPKG_ROOT": "/opt/vcpkg",
+          "CMAKE_TOOLCHAIN_FILE": "/opt/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        },
+        "clangd.path": "/bin/false",
+        "clangd.checkUpdates": false,
+        "clangd.arguments": []
+      }
     }
   }
 }

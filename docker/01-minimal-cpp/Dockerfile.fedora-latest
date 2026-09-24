@@ -1,0 +1,25 @@
+FROM fedora:latest
+
+LABEL org.opencontainers.image.title="minimal-cpp-fedora-latest" \
+      org.opencontainers.image.description="Small GNU/LLVM C++ development image on the latest stable Fedora"
+
+RUN dnf install -y --setopt=install_weak_deps=False --setopt=tsflags=nodocs \
+        ca-certificates \
+        clang \
+        clang-tools-extra \
+        cmake \
+        gcc \
+        gcc-c++ \
+        gdb \
+        git \
+        lldb \
+        make \
+        ninja-build \
+        pkgconf-pkg-config \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf /tmp/* \
+    && command -v clangd \
+    && command -v clang-format
+
+WORKDIR /workspace
+CMD ["/bin/bash"]

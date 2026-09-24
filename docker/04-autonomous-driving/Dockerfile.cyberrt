@@ -1,0 +1,18 @@
+ARG CYBERRT_IMAGE=apolloauto/apollo:cyber-x86_64-18.04-20220801_1143
+ARG APOLLO_PLATFORM=linux/amd64
+FROM --platform=${APOLLO_PLATFORM} ${CYBERRT_IMAGE}
+
+LABEL org.opencontainers.image.title="apollo-cyberrt-dev" \
+      org.opencontainers.image.description="CyberRT-only development environment based on the official Apollo CyberRT image"
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends clangd clang-format \
+    && rm -rf /var/lib/apt/lists/* \
+    && command -v clangd \
+    && command -v clang-format
+
+ENV APOLLO_IN_DOCKER=true \
+    APOLLO_ROOT_DIR=/apollo
+
+WORKDIR /apollo
+CMD ["/bin/bash"]

@@ -1,32 +1,55 @@
-# Kitty（Linux）
+# Kitty 快捷键说明
 
-以下步骤假设已安装 Kitty AppImage 到 `~/.local/kitty.app`，且 `~/.local/bin` 已在系统 `PATH` 中。
+仓库配置是 `kitty.conf`，macOS 实际配置是
+`~/.config/kitty/kitty.conf`。以下只说明 Kitty 自身功能；tmux 的快捷键单独见
+`../tmux/readme.md`。
 
-## 创建符号链接（加入 PATH）
+## 当前自定义快捷键
+
+| 快捷键 | Kitty 动作 |
+| --- | --- |
+| `Cmd+C` | 复制选中的终端文本到系统剪贴板 |
+| `Cmd+V` | 从系统剪贴板粘贴 |
+| `Cmd+S` | 向前台程序发送 `Esc :w Enter`，供 Vim/Neovim 保存 |
+| `Cmd+Shift+F` | 向前台程序发送 `:Telescope live_grep` |
+| `Cmd+B` | 向前台程序发送 `:Neotree toggle` |
+
+`Cmd+P` 在配置中出现两次，后面的映射覆盖前面的 Telescope 映射，因此不要把
+它当作 Kitty/Vim 的文件查找快捷键。配置中还有一组把按键转发给终端内程序的
+映射，它们不属于 Kitty 窗口管理；具体功能以对应程序的 README 为准。
+
+## 仍可使用的 Kitty 原生快捷键（macOS）
+
+| 快捷键 | 功能 |
+| --- | --- |
+| `Cmd+T` | 新建标签页 |
+| `Cmd+Shift+]` / `Cmd+Shift+[` | 下一个 / 上一个标签页 |
+| `Cmd+Enter` | 在当前标签页中新建 Kitty 窗口（pane） |
+| `Cmd+Shift+D` | 关闭当前 Kitty 窗口（pane） |
+| `Cmd+R` | 进入调整 Kitty 窗口大小模式 |
+| `Cmd+F` | 搜索回滚缓冲区 |
+| `Ctrl+Shift+H` | 在分页器中打开回滚历史 |
+| `Cmd++` / `Cmd+-` / `Cmd+0` | 放大 / 缩小 / 重置字体 |
+| `Ctrl+Cmd+F` | 切换全屏 |
+| `Ctrl+Cmd+Space` | 输入 Unicode 字符 |
+| `Ctrl+Cmd+,` | 重新加载 Kitty 配置 |
+| `Ctrl+Shift+F1` | 显示 Kitty 快捷键帮助 |
+
+注意：Kitty 的若干 macOS 默认键（例如 `Cmd+N`、`Cmd+W`、`Cmd+1`～`9`、
+`Cmd+方向键` 和 `Cmd+,`）已被当前 `kitty.conf` 覆盖，不再执行默认动作。
+
+## Linux 桌面集成
+
+以下步骤假设 Kitty AppImage 位于 `~/.local/kitty.app`，且
+`~/.local/bin` 已加入 `PATH`：
 
 ```bash
 ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
-```
-
-## 桌面集成
-
-```bash
 cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/
-# 若需用文件管理器用 kitty 打开文本/图片，一并复制：
 cp ~/.local/kitty.app/share/applications/kitty-open.desktop ~/.local/share/applications/
-```
 
-## 修正 desktop 中的路径与图标
-
-```bash
 sed -i "s|Icon=kitty|Icon=$(readlink -f ~)/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" ~/.local/share/applications/kitty*.desktop
 sed -i "s|Exec=kitty|Exec=$(readlink -f ~)/.local/kitty.app/bin/kitty|g" ~/.local/share/applications/kitty*.desktop
-```
 
-## xdg-terminal-exec
-
-使支持 xdg-terminal-exec 的桌面环境默认使用 kitty：
-
-```bash
 echo 'kitty.desktop' > ~/.config/xdg-terminals.list
 ```

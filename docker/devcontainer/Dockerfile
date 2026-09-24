@@ -1,30 +1,28 @@
 # =============================================================================
-# devcontainer — 与 fedora-demo 同依赖拆分；无 Qt
+# morden-cpp — Fedora Rawhide（非稳定）
 # =============================================================================
-
-FROM fedora:latest
+FROM fedora:rawhide
 
 LABEL maintainer="dofiles" \
-      description="Dev Container: Fedora C/C++ stack (no Qt), slim"
+    description="Fedora Rawhide C/C++ dev , slim"
 
 ARG DNF_CLEAN="dnf clean all && rm -rf /var/cache/dnf /var/cache/yum /tmp/*"
 
-RUN sed -i 's|^metalink=|#metalink=|g' /etc/yum.repos.d/*.repo && \
-    sed -i 's|^#baseurl=http://download.example/pub/fedora/linux|baseurl=https://mirrors.aliyun.com/fedora|g' /etc/yum.repos.d/*.repo
-
+# --- GNU autotools ---
 RUN dnf update -y && dnf install -y --setopt=install_weak_deps=False --setopt=tsflags=nodocs \
     m4 autoconf automake libtool flex bison gettext-devel \
     && eval "$DNF_CLEAN"
 
+# --- vcpkg 官方依赖：curl zip unzip tar；源码编译时 cmake ninja git ---
 RUN dnf install -y --setopt=install_weak_deps=False --setopt=tsflags=nodocs \
     curl zip unzip tar cmake ninja-build git \
     && eval "$DNF_CLEAN"
 
 RUN dnf install -y --setopt=install_weak_deps=False --setopt=tsflags=nodocs \
-    which file gzip xz sudo gawk perl wget net-tools \
-    gcc gcc-c++ gcc-gfortran make gdb \
-    llvm clang clang-tools-extra lldb pkgconf-pkg-config \
-    valgrind strace ltrace perf \
+    which file gzip xz sudo perl wget ca-certificates iproute \
+    gcc gcc-c++ gcc-gfortran make gdb gdb-gdbserver \
+    llvm clang clang-tools-extra lldb compiler-rt pkgconf-pkg-config \
+    valgrind strace ltrace perf sysstat \
     kernel-devel kernel-headers bpftool bcc-tools bpftrace dwarves pahole \
     python3 python3-pip conan xmake \
     && eval "$DNF_CLEAN"
@@ -40,5 +38,5 @@ RUN git clone --depth 1 https://github.com/microsoft/vcpkg.git ${VCPKG_ROOT} \
 ENV PATH="${VCPKG_ROOT}:${PATH}"
 ENV CMAKE_TOOLCHAIN_FILE=${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake
 
-WORKDIR /workspace
+WORKDIR /workspaces
 CMD ["/bin/bash"]

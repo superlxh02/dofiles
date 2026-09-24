@@ -1,0 +1,26 @@
+FROM ubuntu:24.04
+
+LABEL org.opencontainers.image.title="minimal-cpp-ubuntu-24.04" \
+      org.opencontainers.image.description="Stable GNU/LLVM C++ development baseline on Ubuntu 24.04"
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        ca-certificates \
+        clang \
+        clang-format \
+        clangd \
+        cmake \
+        gdb \
+        git \
+        lldb \
+        ninja-build \
+        pkg-config \
+    && rm -rf /var/lib/apt/lists/* \
+    && command -v clangd \
+    && command -v clang-format
+
+WORKDIR /workspace
+CMD ["/bin/bash"]

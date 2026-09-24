@@ -1,56 +1,108 @@
 # dofiles
 
-个人 dotfiles / 配置文件仓库：shell、终端、编辑器、窗口管理等环境搭建说明与配置。克隆或同步本仓库后，可用一键脚本（macOS）或按各子目录 readme 手动配置。
+个人 macOS 开发环境与 dotfiles 仓库，覆盖 Shell、终端、Tmux、Neovim、窗口管理、
+常用命令行工具，以及 C/C++、CMake、Go、Rust、Python、Java、前端和 Docker
+开发环境。
 
----
+## 快速开始
 
-## 快速开始（macOS）
-
-在仓库根目录执行：
+安装脚本仅支持 macOS。克隆仓库后，在仓库根目录执行：
 
 ```bash
 bash scripts/install.sh
 ```
 
-脚本会：检测并提示安装 Xcode Command Line Tools、安装/配置 Homebrew、安装基础工具与多语言开发环境（C++/Java/Go/Rust/Python）、安装 Zsh + Oh My Zsh 并拷贝配置、安装 Fish / Neovim / Kitty / Fastfetch / Tmux / AeroSpace、将本仓库对应配置拷贝到 `~/.config` 等目录，最后克隆 AstroNvim 并合并本仓库的 Neovim 配置。**仅支持 macOS**，非 macOS 会直接退出。若未安装 Command Line Tools，会弹窗提示安装，完成后再重新执行本脚本。
+执行前建议先阅读 [scripts/readme.md](scripts/readme.md)，了解将安装的软件、配置
+目标、备份位置和明确不会执行的操作。脚本需要网络连接；安装 Xcode Command
+Line Tools、Homebrew 或把 Fish 加入 `/etc/shells` 时，macOS 可能弹窗或要求 sudo。
 
-安装完成后：重新打开终端或执行 `exec fish`；进入 tmux 后按 **Ctrl+b** 再按 **I** 安装 TPM 插件；首次运行 `nvim` 会拉取插件。
+## 安装内容
 
----
+| 范围 | 主要组件 |
+|---|---|
+| C/C++ 与构建 | Apple Command Line Tools、LLVM/LLDB、GCC、CMake、Ninja、Meson、ccache、cppcheck、autoconf、automake、libtool、pkgconf、nasm |
+| Go | Go 工具链；gopls、Delve 等由 Neovim/Mason 管理 |
+| Rust | rustup、stable toolchain、rust-analyzer、rust-src、rustfmt、Clippy |
+| Python | Homebrew Python、uv、Miniconda、`py-base-env`（Python 3.12） |
+| Java | OpenJDK 21 |
+| 前端 | Node.js、npm/npx、pnpm |
+| 容器 | macOS 14 及以上安装 OrbStack；旧版 macOS安装 Docker Desktop |
+| 编辑与终端 | Neovim、AstroNvim 配置、Kitty、Fish、Zsh/Oh My Zsh、Tmux |
+| 桌面工具 | AeroSpace、borders、Mononoki Nerd Font、Fastfetch |
 
-## 脚本说明
+另外会安装 Git、ripgrep、fd、fzf、bat、lsd、jq、yq、lazygit、ShellCheck 等常用
+命令行工具。
 
-| 脚本 | 适用系统 | 说明 |
-|------|----------|------|
-| [scripts/install.sh](scripts/install.sh) | **macOS** | 一键安装 Homebrew、工具链、多语言环境、Zsh/Fish/Neovim/Kitty/Tmux/AeroSpace 等，并拷贝本仓库配置到对应目录 |
-| [scripts/ubuntu_install.sh](scripts/ubuntu_install.sh) | Ubuntu | 开发环境安装（基础工具、C/C++、Qt、内核分析、多语言、Docker 等） |
-| [scripts/fedora_install.sh](scripts/fedora_install.sh) | Fedora | 同上，基于 dnf |
-| [scripts/brew-llvm.sh](scripts/brew-llvm.sh) | macOS | 供 source 使用，将 Homebrew LLVM 加入 PATH/LDFLAGS/CPPFLAGS（fish 配置中已含等效设置可略） |
+## 脚本明确不会做什么
 
----
+- 不安装或部署 WezTerm；`wezterm/` 只保留为手动参考配置。
+- 不运行 `docker build`，不调用 `docker/build_images.py`，不构建任何 Dockerfile。
+- 不启动 OrbStack、Docker Desktop、容器或虚拟机。
+- 不自动启动 Neovim，也不执行 Lazy/Mason 的安装命令。
+- 不删除现有 Neovim 配置；只覆盖仓库明确管理的 Lua 文件。
+- 不复制 Fish 的 `fish_variables`，避免覆盖机器专属 universal variables。
 
-## 目录结构
+## 配置部署位置
+
+已有目标文件内容不同时，会先备份到
+`~/.dofiles-backup/YYYYMMDD-HHMMSS/`，再部署新配置。
+
+| 仓库内容 | 实际位置 |
+|---|---|
+| `zsh/.zshrc` | `~/.zshrc` |
+| `fish/config.fish` | `~/.config/fish/config.fish` |
+| `fish/fish_plugins`（存在时） | `~/.config/fish/fish_plugins` |
+| `kitty/kitty.conf` | `~/.config/kitty/kitty.conf` |
+| `kitty/current-theme.conf` | `~/.config/kitty/current-theme.conf` |
+| `tmux/.tmux.conf` | `~/.tmux.conf` |
+| `aerospace/.aerospace.toml` | `~/.aerospace.toml` |
+| `fastfetch/*.jsonc` | `~/.config/fastfetch/` |
+| `nvim/lua/` 中除 README 外的文件 | `~/.config/nvim/lua/` 对应路径 |
+
+如果 `~/.config/nvim` 不存在，脚本会先克隆 AstroNvim 模板；如果已经存在，则只
+合并本仓库的个性化配置，不清空原目录。
+
+## 安装完成后
+
+1. 重新打开终端，让 Homebrew 和工具链 PATH 生效。
+2. 如需把 Fish 设为默认 Shell，执行 `chsh -s "$(brew --prefix)/bin/fish"`。
+3. 手动打开 OrbStack 或 Docker Desktop，完成其首次初始化。
+4. 第一次打开 `nvim`，等待插件下载完成；需要时执行
+   `:Lazy sync`、`:MasonToolsInstallSync` 和 `:checkhealth`。
+
+Neovim 的语言支持、调试方法和完整快捷键见
+[nvim/lua/readme.md](nvim/lua/readme.md)。
+
+## 脚本
+
+| 脚本 | 说明 |
+|---|---|
+| [scripts/install.sh](scripts/install.sh) | macOS 软件安装、工具链初始化、旧配置备份和新配置部署 |
+| [scripts/brew-llvm.sh](scripts/brew-llvm.sh) | 按需 `source`，把 Homebrew LLVM 的 bin、lib、include 和 pkg-config 路径加入当前 Shell |
+
+详细说明见 [scripts/readme.md](scripts/readme.md)。
+
+## 目录
 
 | 目录 | 说明 |
-|------|------|
-| [fish](fish/readme.md) | Fish shell 配置；Oh My Fish (OMF) 安装说明 |
-| [zsh](zsh/readme.md) | Zsh / Oh My Zsh、语法高亮与自动建议插件、Powerlevel10k 主题 |
-| [tmux](tmux/readme.md) | Tmux 配置与 TPM 插件管理器；安装插件：进入 tmux 后 **Ctrl+b** 再按 **I** |
-| [kitty](kitty/readme.md) | Kitty 终端配置（含 Linux 安装与桌面集成） |
-| [wezterm](wezterm/readme.md) | WezTerm 安装（Flatpak / Ubuntu / AppImage） |
-| [spaceship](spaceship/readme.md) | Spaceship prompt 安装与使用 |
-| [nvim/lua](nvim/lua/readme.md) | Neovim / AstroNvim：备份说明、克隆模板；本仓库提供 `lua/config` 等覆盖配置 |
-| [aerospace](aerospace/.aerospace.toml) | AeroSpace 平铺窗口管理器配置（macOS）；拷贝 `.aerospace.toml` 到 `~/.aerospace.toml` |
-| [fastfetch](fastfetch/) | Fastfetch 配置（多套 jsonc）；拷贝到 `~/.config/fastfetch/` |
-| [docker](docker/readme.md) | C/C++ 开发 Docker 镜像（Fedora/Ubuntu/Rocky、SSH 版、Rawhide、Dev Container）与一键构建脚本 |
+|---|---|
+| [scripts](scripts/readme.md) | macOS 安装脚本、执行阶段、软件清单和安全边界 |
+| [nvim/lua](nvim/lua/readme.md) | AstroNvim 个性化覆盖、语言工具、调试和完整快捷键 |
+| [fish](fish/readme.md) | Fish 配置；安装脚本使用 Fisher 管理插件 |
+| [zsh](zsh/readme.md) | Zsh、Oh My Zsh、自动建议和语法高亮 |
+| [tmux](tmux/readme.md) | Tmux、TPM、Catppuccin 和跨 Neovim 面板导航 |
+| [kitty](kitty/readme.md) | Kitty 终端与快捷键配置 |
+| [aerospace](aerospace/.aerospace.toml) | AeroSpace 平铺窗口管理器配置 |
+| [fastfetch](fastfetch/) | Fastfetch 的多套 JSONC 配置 |
+| [docker](docker/readme.md) | Docker 开发镜像和手动构建说明；安装脚本不会自动构建 |
+| [wezterm](wezterm/readme.md) | 可选的手动参考配置；安装脚本不会处理 |
+| [spaceship](spaceship/readme.md) | 可选的 Spaceship prompt 使用说明 |
 
----
+## 手动部署
 
-## 手动配置
+不使用一键脚本时，可以按“配置部署位置”表手动复制文件。Neovim 建议先备份
+`~/.config/nvim`，再按照 [Neovim 说明](nvim/lua/readme.md)初始化 AstroNvim 并
+合并本仓库的 `nvim/lua` 覆盖层。
 
-若不使用 `scripts/install.sh`，可：
-
-1. 将对应目录下的配置文件拷贝到系统约定路径（如 `~/.config/fish`、`~/.tmux.conf`、`~/.zshrc` 等）。
-2. 按各子目录中的 **readme** 完成依赖安装（Oh My Zsh、TPM、AstroNvim、字体等）。
-
-Neovim 需先按 [nvim/lua/readme.md](nvim/lua/readme.md) 备份并克隆 AstroNvim 模板，再将本仓库 `nvim/lua` 下内容合并到 `~/.config/nvim/lua/`。
+Docker 镜像只按 [Docker 说明](docker/readme.md)手动构建，不属于 dotfiles
+安装流程。

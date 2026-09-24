@@ -1,18 +1,5 @@
 #!/usr/bin/env python3
-"""
-构建 docker/ 下除 devcontainer 外的所有镜像。
-
-命名规则：
-  - 常规（无 sshd）：{fedora|ubuntu|rocky}-base-dev-mirror:1.0
-  - 带 sshd：在同名基础上插入 -ssh，即 {fedora|ubuntu|rocky}-base-dev-ssh-mirror:1.0
-  - minimal Fedora 基底：fedora-min-base-dev-mirror:1.0（避免与 fedora-demo 同 tag 覆盖）
-  - Rawhide 常规：modern-cpp-dev-mirror:1.0；带 sshd：modern-cpp-dev-ssh-mirror:1.0（与 morden-cpp / morden-cpp-sshd 对应）
-
-用法：
-  python3 build_images.py
-  python3 build_images.py --dry-run
-  python3 build_images.py --only fedora-base-dev-mirror:1.0 ubuntu-base-dev-ssh-mirror:1.0 rocky-base-dev-ssh-mirror:1.0 modern-cpp-dev-ssh-mirror:1.0
-"""
+"""构建七类开发环境中的 Docker 镜像，不处理 devcontainer。"""
 
 from __future__ import annotations
 
@@ -24,18 +11,21 @@ import sys
 DOCKER_DIR = os.path.dirname(os.path.abspath(__file__))
 TAG_VERSION = "1.0"
 
-# (dockerfile 相对 docker/ 的路径) -> 镜像名:tag
-# 不含 devcontainer/
+# (Dockerfile 相对 docker/ 的路径) -> 镜像名:tag
 IMAGE_MAP: dict[str, str] = {
-    "base-dev.Dockerfile": f"fedora-min-base-dev-mirror:{TAG_VERSION}",
-    "fedora-demo.Dockerfile": f"fedora-base-dev-mirror:{TAG_VERSION}",
-    "ubuntu-demo.Dockerfile": f"ubuntu-base-dev-mirror:{TAG_VERSION}",
-    "rocky-demo.Dockerfile": f"rocky-base-dev-mirror:{TAG_VERSION}",
-    "morden-cpp.Dockerfile": f"modern-cpp-dev-mirror:{TAG_VERSION}",
-    "morden-cpp-sshd.Dockerfile": f"modern-cpp-dev-ssh-mirror:{TAG_VERSION}",
-    "fedora-sshd.Dockerfile": f"fedora-base-dev-ssh-mirror:{TAG_VERSION}",
-    "ubuntu-sshd.Dockerfile": f"ubuntu-base-dev-ssh-mirror:{TAG_VERSION}",
-    "rocky-sshd.Dockerfile": f"rocky-base-dev-ssh-mirror:{TAG_VERSION}",
+    "01-minimal-cpp/Dockerfile.ubuntu-latest": f"cpp-min-ubuntu-latest:{TAG_VERSION}",
+    "01-minimal-cpp/Dockerfile.fedora-latest": f"cpp-min-fedora-latest:{TAG_VERSION}",
+    "01-minimal-cpp/Dockerfile.ubuntu-24.04": f"cpp-min-ubuntu-24.04:{TAG_VERSION}",
+    "02-full-cpp/Dockerfile.ubuntu-latest": f"cpp-full-ubuntu-latest:{TAG_VERSION}",
+    "02-full-cpp/Dockerfile.fedora-latest": f"cpp-full-fedora-latest:{TAG_VERSION}",
+    "02-full-cpp/Dockerfile.ubuntu-24.04": f"cpp-full-ubuntu-24.04:{TAG_VERSION}",
+    "03-robotics/Dockerfile.ros2-jazzy": f"ros2-jazzy-headless:{TAG_VERSION}",
+    "03-robotics/Dockerfile.ros2-jazzy-desktop-vnc": f"ros2-jazzy-desktop-vnc:{TAG_VERSION}",
+    "04-autonomous-driving/Dockerfile.apollo-full": f"apollo-full-dev:{TAG_VERSION}",
+    "04-autonomous-driving/Dockerfile.cyberrt": f"apollo-cyberrt-dev:{TAG_VERSION}",
+    "05-modern-cpp/Dockerfile": f"modern-cpp-rawhide:{TAG_VERSION}",
+    "06-embedded-linux/Dockerfile": f"embedded-linux-dev:{TAG_VERSION}",
+    "07-automotive-communication/Dockerfile": f"automotive-communication-dev:{TAG_VERSION}",
 }
 
 
@@ -52,13 +42,13 @@ def build_one(dockerfile: str, image: str, dry_run: bool) -> int:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Build all docker images except devcontainer.")
+    ap = argparse.ArgumentParser(description="Build the seven categorized image families.")
     ap.add_argument("--dry-run", action="store_true", help="Print docker build commands only")
     ap.add_argument(
         "--only",
         nargs="*",
         metavar="IMAGE",
-        help="Build only these image names or dockerfile basename",
+        help="Build only these image names, Dockerfile paths, or Dockerfile basenames",
     )
     args = ap.parse_args()
 
@@ -66,7 +56,11 @@ def main() -> int:
     rc = 0
     for dockerfile, image in sorted(IMAGE_MAP.items(), key=lambda x: x[0]):
         if only_set:
-            if image not in only_set and dockerfile not in only_set:
+            if (
+                image not in only_set
+                and dockerfile not in only_set
+                and os.path.basename(dockerfile) not in only_set
+            ):
                 continue
         r = build_one(dockerfile, image, args.dry_run)
         if r != 0:

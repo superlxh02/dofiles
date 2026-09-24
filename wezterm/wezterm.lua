@@ -92,6 +92,13 @@ config = {
 	-- │                          KEYS                           │
 	-- ╰─────────────────────────────────────────────────────────╯
 	keys = {
+		-- Send editor shortcuts to Neovim instead of handling them in WezTerm.
+		{ key = "c", mods = "CMD", action = act.SendKey({ key = "c", mods = "SUPER" }) },
+		{ key = "v", mods = "CMD", action = act.SendKey({ key = "v", mods = "SUPER" }) },
+		{ key = "z", mods = "CMD", action = act.SendKey({ key = "z", mods = "SUPER" }) },
+		{ key = "z", mods = "CMD|SHIFT", action = act.SendKey({ key = "z", mods = "SUPER|SHIFT" }) },
+		{ key = "`", mods = "CTRL|SHIFT", action = act.SendKey({ key = "F7" }) },
+		{ key = "/", mods = "CTRL|SHIFT", action = act.SendKey({ key = "F8" }) },
 		k.cmd_key("b", k.multiple_actions(":Neotree toggle")),
 		k.cmd_key("p", k.multiple_actions(":Telescope find_files")),
 		k.cmd_key("F", k.multiple_actions(":Telescope live_grep")),

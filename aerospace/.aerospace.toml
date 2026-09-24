@@ -13,6 +13,15 @@ after-startup-command = [
 	# JankyBorders has a built-in detection of already running process,
 	# so it won't be run twice on AeroSpace restart
 	'exec-and-forget borders active_color=0xffe1e3e4 inactive_color=0x00494d64 width=5',
+	'workspace S',
+	'flatten-workspace-tree',
+	'layout tiles',
+	'balance-sizes',
+	'workspace T',
+	'flatten-workspace-tree',
+	'layout tiles',
+	'balance-sizes',
+	'workspace 1',
 ]
 
 # Start AeroSpace at login
@@ -94,7 +103,7 @@ outer.right = 15
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#layout
 alt-slash = 'layout tiles horizontal vertical'
-alt-comma = 'layout accordion horizontal vertical'
+alt-comma = 'layout tiles horizontal vertical'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#focus
 alt-h = 'focus left'
@@ -204,7 +213,12 @@ alt-shift-semicolon = 'mode service'
 [mode.service.binding]
 b = ['balance-sizes']
 esc = ['reload-config', 'mode main']
-r = ['flatten-workspace-tree', 'mode main'] # reset layout
+r = [
+	'flatten-workspace-tree',
+	'layout tiles',
+	'balance-sizes',
+	'mode main',
+] # reset layout
 f = [
 	'layout floating tiling',
 	'mode main',

@@ -1,0 +1,75 @@
+FROM ros:jazzy-ros-base-noble
+
+LABEL org.opencontainers.image.title="ros2-jazzy-desktop-vnc-dev" \
+      org.opencontainers.image.description="ROS 2 Jazzy desktop-full, Qt, Gazebo and externally accessible TigerVNC on Ubuntu 24.04"
+
+ARG USERNAME=ros
+ARG USER_UID=1000
+ARG USER_GID=1000
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    ROS_DISTRO=jazzy \
+    DISPLAY=:1 \
+    VNC_GEOMETRY=1920x1080 \
+    VNC_DEPTH=24 \
+    LIBGL_ALWAYS_SOFTWARE=1 \
+    QT_X11_NO_MITSHM=1
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        ca-certificates \
+        clang \
+        clang-format \
+        clangd \
+        cmake \
+        dbus-x11 \
+        gdb \
+        git \
+        libgl1-mesa-dri \
+        libglx-mesa0 \
+        mesa-utils \
+        ninja-build \
+        procps \
+        python3-colcon-common-extensions \
+        python3-rosdep \
+        python3-vcstool \
+        ros-dev-tools \
+        ros-jazzy-desktop-full \
+        ros-jazzy-ros-gz \
+        sudo \
+        tigervnc-standalone-server \
+        tigervnc-tools \
+        tini \
+        x11-xserver-utils \
+        xauth \
+        xfce4 \
+        xfce4-terminal \
+    && rm -rf /var/lib/apt/lists/* \
+    && command -v clangd \
+    && command -v clang-format \
+    && command -v tigervncserver \
+    && groupadd --force render \
+    && groupadd --force video \
+    && groupadd --gid "${USER_GID}" "${USERNAME}" \
+    && useradd --uid "${USER_UID}" --gid "${USER_GID}" --create-home --shell /bin/bash "${USERNAME}" \
+    && usermod -aG video,render "${USERNAME}" \
+    && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/ros \
+    && chmod 0440 /etc/sudoers.d/ros \
+    && mkdir -p /ros2_ws/src \
+    && chown -R "${USER_UID}:${USER_GID}" /ros2_ws
+
+RUN rosdep init 2>/dev/null || true
+
+COPY --chmod=0755 03-robotics/vnc-entrypoint.sh /usr/local/bin/vnc-entrypoint
+COPY --chmod=0755 03-robotics/vnc-xstartup.sh /usr/local/bin/vnc-xstartup
+
+USER ${USERNAME}
+WORKDIR /ros2_ws
+
+EXPOSE 5901
+
+HEALTHCHECK --interval=10s --timeout=3s --start-period=20s --retries=5 \
+    CMD pgrep -x Xtigervnc >/dev/null || exit 1
+
+ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/vnc-entrypoint"]

@@ -13,6 +13,13 @@ return {
       term_colors = true,
       dim_inactive = { enabled = false },
       auto_integrations = true,
+      custom_highlights = function(colors)
+        local separator = { fg = colors.lavender, bg = colors.base, bold = true }
+        return {
+          WinSeparator = separator,
+          VertSplit = separator,
+        }
+      end,
       integrations = {
         aerial = true,
         blink_cmp = { style = "bordered" },
@@ -26,6 +33,26 @@ return {
         snacks = { indent_scope_color = "lavender" },
         treesitter = true,
         which_key = true,
+      },
+    },
+  },
+  {
+    "AstroNvim/astrocore",
+    opts = {
+      options = {
+        opt = {
+          -- Heavy box-drawing characters keep split boundaries visible on the
+          -- dark Catppuccin Mocha background.
+          fillchars = {
+            vert = "┃",
+            horiz = "━",
+            horizup = "┻",
+            horizdown = "┳",
+            vertleft = "┫",
+            vertright = "┣",
+            verthoriz = "╋",
+          },
+        },
       },
     },
   },

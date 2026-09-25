@@ -303,6 +303,10 @@ Markdown。Marksman 同时提供 Markdown LSP 补全和跳转。
 部分终端无法把 `Ctrl+Shift` 组合直接传给 Neovim，所以同时保留了始终可靠的
 `F7`、`F8` 备用键。当前仓库中的 Kitty 和 WezTerm 配置已经负责转发这些组合键。
 
+底部终端高度会动态保持为整个 Neovim 窗口的约 `1/4`。CMake 的配置、构建和
+运行输出，以及 rustaceanvim 的 Cargo 运行、构建和测试输出，均使用这个最底部
+的水平面板；即使启动命令时焦点位于 Neo-tree，也不会在文件树旁边创建平行分屏。
+
 ### Git
 
 | 快捷键 | 功能 |
@@ -442,7 +446,10 @@ Markdown。Marksman 同时提供 Markdown LSP 补全和跳转。
 2. 按 `F5`，首次会让你选择启动配置；C/C++ 会要求选择已编译的可执行文件。
 3. CMake 项目可以先运行 `:CMakeBuild`，再按 `F5`；也可以用
    `:CMakeDebug` 让 cmake-tools 直接启动当前目标。
-4. 如果项目已有 VS Code 的 `.vscode/launch.json`，nvim-dap 会直接读取它。
+   构建输出固定显示在底部约 `1/4` 高度的终端面板。
+4. Rust 可通过 `:RustLsp runnables` 选择 Cargo 构建或运行目标，输出同样显示在
+   底部终端面板。
+5. 如果项目已有 VS Code 的 `.vscode/launch.json`，nvim-dap 会直接读取它。
 
 检查问题时常用：
 

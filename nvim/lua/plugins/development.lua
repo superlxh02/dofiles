@@ -2,8 +2,12 @@ local function paste_clipboard()
   vim.api.nvim_paste(vim.fn.getreg "+", true, -1)
 end
 
+local function bottom_panel_height()
+  return math.max(6, math.floor(vim.o.lines / 4))
+end
+
 local function bottom_terminal()
-  vim.cmd "1ToggleTerm size=12 direction=horizontal"
+  vim.cmd(("1ToggleTerm size=%d direction=horizontal"):format(bottom_panel_height()))
 end
 
 local function floating_terminal()
@@ -116,8 +120,53 @@ return {
     "akinsho/toggleterm.nvim",
     opts = {
       direction = "horizontal",
-      size = 12,
+      size = function(term)
+        if term.direction == "horizontal" then return bottom_panel_height() end
+        return 80
+      end,
+      persist_size = false,
       float_opts = { border = "rounded" },
+    },
+  },
+
+  {
+    "Civitasv/cmake-tools.nvim",
+    optional = true,
+    opts = {
+      -- Keep configure/build output in a VS Code-like bottom panel. ToggleTerm
+      -- uses `botright split`, so it cannot split beside Neo-tree even when the
+      -- file explorer had focus before the command was started.
+      cmake_executor = {
+        name = "toggleterm",
+        opts = {
+          direction = "horizontal",
+          close_on_exit = false,
+          auto_scroll = true,
+          singleton = true,
+        },
+      },
+      cmake_runner = {
+        name = "toggleterm",
+        opts = {
+          direction = "horizontal",
+          close_on_exit = false,
+          auto_scroll = true,
+          singleton = true,
+        },
+      },
+    },
+  },
+
+  {
+    "mrcjkb/rustaceanvim",
+    optional = true,
+    opts = {
+      tools = {
+        -- Cargo run/build/test output shares the same bottom terminal panel.
+        executor = "toggleterm",
+        test_executor = "toggleterm",
+        crate_test_executor = "toggleterm",
+      },
     },
   },
 

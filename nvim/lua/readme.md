@@ -97,6 +97,9 @@ Docker Desktop，或 `docker` CLI + Colima。
 | `Ctrl+Shift+/` / `F8` | 打开/关闭悬浮终端 |
 | `Space f f` | 查找文件 |
 | `Space f w` | 全项目搜索文本 |
+| `Cmd+F` / `F2` | 当前文件搜索与批量替换 |
+| `Cmd+Shift+F` / `F3` | 工作区搜索与批量替换 |
+| `Cmd+P` / `F4` | 打开居中悬浮文件查找 |
 | `Space l f` | 格式化当前文件或选区 |
 | `Space /` | 注释/取消注释当前行或选区 |
 | `F5` | 启动或继续调试 |
@@ -151,6 +154,12 @@ Kitty 的 `Ctrl+Shift+C/V` 仍用于复制/粘贴终端选区；`Cmd+Ctrl+Z` 用
 
 | 快捷键 | 功能 |
 |---|---|
+| `Cmd+F` / `F2` | 用 Spectre 搜索/替换当前文件 |
+| `Cmd+Shift+F` / `F3` | 用 Spectre 搜索/替换整个工作区 |
+| `Cmd+P` / `F4` | 打开无预览分区的居中悬浮文件查找窗口 |
+| `Space s s` | 打开工作区搜索/替换 |
+| `Space s f` | 打开当前文件搜索/替换 |
+| 可视模式 `Space s w` | 使用选中的文字开始搜索/替换 |
 | `Space f f` | 在当前目录查找文件 |
 | `Space f F` | 查找所有文件，包括通常被忽略的文件 |
 | `Space f g` | 查找 Git 跟踪的文件 |
@@ -174,6 +183,32 @@ Kitty 的 `Ctrl+Shift+C/V` 仍用于复制/粘贴终端选区；`Cmd+Ctrl+Z` 用
 | `Space f t` | 预览并选择主题 |
 | `Space f a` | 查找 AstroNvim 配置文件 |
 | `Space f Enter` | 恢复上一次搜索界面 |
+
+`Cmd` 组合键由 Kitty 转发为 `F2`、`F3`、`F4`，因此在 tmux 内也能稳定工作；
+直接使用相应功能键可以获得完全相同的效果。
+
+Spectre 界面中先填写搜索词和替换词。普通模式按 `o` 打开选项菜单，可切换
+大小写敏感、忽略大小写、隐藏文件等参数；`R` 执行全部替换，`C` 替换当前项，
+`v` 切换结果显示方式，`q` 把结果发送到 Quickfix。正则搜索默认可用；若要按
+普通文本匹配，可在选项中启用 literal/fixed-string 方式。执行批量替换前会先
+显示 diff 结果，建议确认无误后再按 `R`。
+
+### Markdown 渲染与预览
+
+打开 `.md` 或 `.mdx` 文件后，render-markdown 会在普通模式中渲染标题、代码块、
+表格、列表、复选框、引用、链接和公式等元素；进入插入模式时显示便于编辑的原始
+Markdown。Marksman 同时提供 Markdown LSP 补全和跳转。
+
+| 快捷键 | 功能 |
+|---|---|
+| `Space M r` | 打开/关闭当前 Neovim 内的 Markdown 渲染 |
+| `Space M v` | 在 Neovim 侧边打开完整渲染预览 |
+| `Space M p` | 在浏览器启动实时 Markdown 预览 |
+| `Space M t` | 打开/关闭浏览器实时预览 |
+| `Space M s` | 停止浏览器预览服务 |
+
+对应命令是 `:RenderMarkdown toggle`、`:RenderMarkdown preview`、
+`:MarkdownPreview`、`:MarkdownPreviewToggle` 和 `:MarkdownPreviewStop`。
 
 ### LSP、代码与诊断
 

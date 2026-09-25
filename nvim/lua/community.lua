@@ -11,6 +11,14 @@ return {
   { import = "astrocommunity.pack.rust" },
   { import = "astrocommunity.pack.python" },
   { import = "astrocommunity.pack.docker" },
+  { import = "astrocommunity.pack.markdown" },
+
+  -- Render Markdown inside Neovim and provide a synchronized browser preview.
+  { import = "astrocommunity.markdown-and-latex.render-markdown-nvim" },
+  { import = "astrocommunity.markdown-and-latex.markdown-preview-nvim" },
+
+  -- VS Code-like workspace/current-file search and batch replace UI.
+  { import = "astrocommunity.search.nvim-spectre" },
 
   -- Front-end: Vue also imports the TypeScript pack; Tailwind imports HTML/CSS.
   -- React/TSX is covered by the TypeScript pack.

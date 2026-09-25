@@ -1,3 +1,8 @@
+# Terminal programs that request an external editor (for example Fish's
+# edit-command-buffer binding) should consistently open Neovim.
+set -gx EDITOR nvim
+set -gx VISUAL nvim
+
 if status is-interactive
     # Homebrew 工具链（兼容 Apple Silicon 和 Intel Mac）。
     if command -q brew

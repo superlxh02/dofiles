@@ -10,9 +10,14 @@
 | --- | --- |
 | `Cmd+C` | 复制选中的终端文本到系统剪贴板 |
 | `Cmd+V` | 从系统剪贴板粘贴 |
+| `Ctrl+Shift+C` | 复制选中的终端文本（备用键） |
+| `Ctrl+Shift+V` | 从系统剪贴板粘贴（备用键） |
 | `Cmd+S` | 向前台程序发送 `Esc :w Enter`，供 Vim/Neovim 保存 |
 | `Cmd+Shift+F` | 向前台程序发送 `:Telescope live_grep` |
 | `Cmd+B` | 向前台程序发送 `:Neotree toggle` |
+
+复制和粘贴由 Kitty 直接处理，在普通 Fish、tmux 和 Neovim 中行为一致；这两个
+Command 按键不会再通过 Kitty keyboard protocol 转发给 Neovim。
 
 `Cmd+P` 在配置中出现两次，后面的映射覆盖前面的 Telescope 映射，因此不要把
 它当作 Kitty/Vim 的文件查找快捷键。配置中还有一组把按键转发给终端内程序的
@@ -37,6 +42,17 @@
 
 注意：Kitty 的若干 macOS 默认键（例如 `Cmd+N`、`Cmd+W`、`Cmd+1`～`9`、
 `Cmd+方向键` 和 `Cmd+,`）已被当前 `kitty.conf` 覆盖，不再执行默认动作。
+
+### Neovim 搜索
+
+| Kitty 快捷键 | 发送给 Neovim | 功能 |
+|---|---|---|
+| `Cmd+F` | `F2` | 当前文件搜索与批量替换 |
+| `Cmd+Shift+F` | `F3` | 工作区搜索与批量替换 |
+| `Cmd+P` | `F4` | 居中悬浮文件查找 |
+
+这里使用功能键转发，是为了让快捷键经过 tmux 后仍然可靠。原来的 tmux“上一个
+窗口”改为 `Cmd+Shift+P`。
 
 ## Linux 桌面集成
 
